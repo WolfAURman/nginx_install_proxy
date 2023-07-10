@@ -6,7 +6,7 @@
 
 ### Ведение в курс дела
 Nginx Proxy Manager позволяет создать промежуточное звено между трафиком пользователей и конечными точками на вашем хосте. Вы можете увидеть это на картинке ниже:
-![1](https://github.com/WolfAURman/nginx_install_proxy/assets/93985232/eee4b953-0959-4380-be84-8dc538be015a)
+![1](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/1.png)
 В этом и заключается прелесть этого способа. На одной машине вы можете расположить несколько контейнеров которым будет необходим 80 порт, но вам не нужно будет что-то "костылить" или изменять.
 За вас будет это делать используя переадресацию nginx при переходе на необходимый домен. У вас всегда будут красивые и адекватные домены, и самое главное ssl.
 
@@ -64,16 +64,16 @@ podman run --detach \
 6. После чего переходим на http://ip_вашего_сервера:45344 и настраиваем панель в виде изменения логина и пароля. Советую вписывать валидную почту.
 
 После этого вы увидите такого вида панель:
-![image](https://github.com/WolfAURman/nginx_install_proxy/assets/93985232/92a5a9f2-44c0-4ae4-894d-fa59cc02d3a3)
+![image](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/Screenshot%20from%202023-07-10%2011-58-58.png)
 
-7. Нам необходимо нажать на Proxy Hosts после чего нажать на add proxy host:
-![image](https://github.com/WolfAURman/nginx_install_proxy/assets/93985232/9c07cdc2-8d0b-4602-b0d3-4bfc551878f2)
+7. Нам необходимо нажать на Proxy Hosts после чего нажать на add proxy host.
 
 8. После чего вводим такого содержания наполнение и сохраняем.
-![image](https://github.com/WolfAURman/nginx_install_proxy/assets/93985232/d9d223cb-5efc-4aac-8757-d577e29dd93c)
+![image](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/Screenshot%20from%202023-07-10%2011-57-31.png)
 
 9. После этого если всё исправно и не появилось ошибок, нажимаем на три точки и добавляем ssl сертификат:
-![image](https://github.com/WolfAURman/nginx_install_proxy/assets/93985232/140d0a99-06ed-4c04-91e7-d32cd9e8f5ea)
+![image](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/2.png)
+
 Если не возникло проблем - продолжаем.
 
 10. После чего выходим из панели и удаляем контейнер командой:
@@ -118,8 +118,8 @@ podman container inspect nextcloud | grep IPAddress
 На выходе получаем 10.89.1.11 или что-то похожего содержания.
 
 15. Создаём новый домен на тот же ip вашей машины, и переходим снова в панель прокси, добавляем ваш ip и новый домен, а так же аналогично как и ранее генерируем ssl сертификат:
-![image](https://github.com/WolfAURman/nginx_install_proxy/assets/93985232/63fbfc3d-83c5-4773-8a59-a43946a1bf95)
-![image](https://github.com/WolfAURman/nginx_install_proxy/assets/93985232/b204cc93-2d61-43c4-bf06-b3511488463e)
+![image](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/Screenshot%20from%202023-07-10%2011-58-15.png)
+![image](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/2.png)
 
 16. После чего сохраняем, и подключаемся по новому домену к вашему серверу уже с ssl сертификатом и https.
 
