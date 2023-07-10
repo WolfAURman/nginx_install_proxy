@@ -4,6 +4,9 @@
 - https://antoshabrain.blogspot.com/2021/09/nginx-proxy-manager-docker-compose.html
 - https://github.com/NginxProxyManager/nginx-proxy-manager/issues/2036#issuecomment-1486149750
 
+## Доп. инфа:
+- https://github.com/nextcloud/all-in-one/blob/main/reverse-proxy.md
+  
 ### Ведение в курс дела
 Nginx Proxy Manager позволяет создать промежуточное звено между трафиком пользователей и конечными точками на вашем хосте. Вы можете увидеть это на картинке ниже:
 ![1](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/1.png)
