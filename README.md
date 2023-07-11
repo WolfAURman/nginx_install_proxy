@@ -142,7 +142,7 @@ podman run --detach \
   --memory=256M \
   --volume=/home/ikrell/nextcloud/data:/var/www/html/data:rw \
   --volume=/home/ikrell/nextcloud/config:/var/www/html/config:rw \
-  --network podman2 \
+  --network ngnix \
   nextcloud:latest
 ```
 
