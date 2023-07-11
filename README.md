@@ -48,6 +48,16 @@ mkdir nextcloud && cd nextcloud && mkdir config && mkdir data && cd ~/ && mkdir 
 podman network create nginx
 ```
 
+
+- ВАЖНО! Если создаём сеть со статическим ip (рекомендуется только так создавать сеть):
+Если вы выбрали данный вариант, этап c обычным созданием сети вам не нужен.
+<details>
+  
+```
+podman network create --subnet 10.55.0.0/16 nginx
+```
+</details>
+
 5. Создаём контейнер с обратным прокси:
 
 ```
@@ -64,6 +74,25 @@ podman run --detach \
   jc21/nginx-proxy-manager:latest
 ```
 
+- ВАЖНО! Если вы указали статический ip выполните эту команду:
+<details>
+  
+```
+podman run --detach \
+  --publish 80:80/tcp \
+  --publish 443:443/tcp \
+  --publish 45344:81/tcp \
+  --name nginx-proxy-manager \
+  --cpus=1 \
+  --memory=256M \
+  --volume /home/ikrell/nginx-proxy-manager/data:/data:rw \
+  --volume /home/ikrell/nginx-proxy-manager/letsencrypt:/etc/letsencrypt:rw \
+  --network nginx \
+  --ip=10.55.0.1 \
+  jc21/nginx-proxy-manager:latest
+```
+</details>
+
 6. После чего переходим на http://ip_вашего_сервера:45344 и настраиваем панель в виде изменения логина и пароля. Советую вписывать валидную почту.
 
 После этого вы увидите такого вида панель:
@@ -73,6 +102,9 @@ podman run --detach \
 
 8. После чего вводим такого содержания наполнение и сохраняем.
 ![image](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/Screenshot%20from%202023-07-10%2011-57-31.png)
+
+- ВАЖНО! Если вы ранее указали статический ip, вы указываете ip который указали в контейнере ранее вместо localhost.
+т.е не ```localhost``` а ```10.55.0.1```
 
 9. После этого если всё исправно и не появилось ошибок, нажимаем на три точки и добавляем ssl сертификат:
 ![image](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/2.png)
@@ -113,6 +145,25 @@ podman run --detach \
   --network podman2 \
   nextcloud:latest
 ```
+
+- ВАЖНО! Если вы указали статичную сеть вам понадобится эта команда:
+
+<details>
+  
+```
+podman run --detach \
+  --name=nextcloud \
+  --cpus=1 \
+  --memory=256M \
+  --volume=/home/ikrell/nextcloud/data:/var/www/html/data:rw \
+  --volume=/home/ikrell/nextcloud/config:/var/www/html/config:rw \
+  --network nginx \
+    --ip=10.55.0.2 \
+  nextcloud:latest
+```
+</details>
+
+- Так же важное замечание. Если вы указали статичный ip, вам не нужен пункт 14. Вы и так знаете внутри сети podman'a его ip, т.е ```10.55.0.2```. В панели вы так же добавляете ```10.55.0.2``` а не ```10.89.1.11``` как показано в примере ниже.
 
 14. После этого мы узнаём ip этого контейнера для добавления его в наш прокси:
 ```
@@ -192,4 +243,14 @@ Strict mode, no HTTP connection allowed!
 ```
 В: Зачем мы пересоздавали контейнер?
 О: Для первичной настройки, дабы у нас не висели никакие лишние порты для большей безопасности извне.
+```
+
+```
+В: Зачем мы прописывали статичную сеть со статичным ip?
+О: Из-за того что при перезапуске контейнера по техническим шоколадкам (всякое бывает) вы теряете ip и контейнер получает новый. Из чего следует логичный ответ - во избежание потери доступа к нему извне.
+```
+
+```
+В: Как сделать автоматический перезапуск контейнера при ошибке?
+О: Пропишите опцию --restart always при использовании run.
 ```
