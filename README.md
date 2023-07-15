@@ -21,7 +21,7 @@ Nginx Proxy Manager позволяет создать промежуточное
 - duckdns
 
 1. Идём на duckdns.org и создаём там нужные нам домены:
-![image](https://github.com/WolfAURman/nginx_install_proxy/assets/93985232/7220c2cf-dbe2-43eb-9106-7556cf8772d6)
+![image](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/Screenshot%20from%202023-07-10%2011-55-41.png)
 
 2. После создания доменов нам необходимо получить образы контейнеров для Nginx Proxy Manager и nextcloud. Пишем:
 
@@ -88,7 +88,7 @@ podman run --detach \
   --volume /home/ikrell/nginx-proxy-manager/data:/data:rw \
   --volume /home/ikrell/nginx-proxy-manager/letsencrypt:/etc/letsencrypt:rw \
   --network nginx \
-  --ip=10.55.0.1 \
+  --ip=10.55.0.5 \
   jc21/nginx-proxy-manager:latest
 ```
 </details>
@@ -104,7 +104,7 @@ podman run --detach \
 ![image](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/Screenshot%20from%202023-07-10%2011-57-31.png)
 
 - ВАЖНО! Если вы ранее указали статический ip, вы указываете ip который указали в контейнере ранее вместо localhost.
-т.е не ```localhost``` а ```10.55.0.1```
+т.е не ```localhost``` а ```10.55.0.5```
 
 9. После этого если всё исправно и не появилось ошибок, нажимаем на три точки и добавляем ssl сертификат:
 ![image](https://raw.githubusercontent.com/WolfAURman/nginx_install_proxy/main/media/2.png)
@@ -142,7 +142,7 @@ podman run --detach \
   --memory=256M \
   --volume=/home/ikrell/nextcloud/data:/var/www/html/data:rw \
   --volume=/home/ikrell/nextcloud/config:/var/www/html/config:rw \
-  --network ngnix \
+  --network nginx \
   nextcloud:latest
 ```
 
@@ -158,12 +158,12 @@ podman run --detach \
   --volume=/home/ikrell/nextcloud/data:/var/www/html/data:rw \
   --volume=/home/ikrell/nextcloud/config:/var/www/html/config:rw \
   --network nginx \
-    --ip=10.55.0.2 \
+    --ip=10.55.0.6 \
   nextcloud:latest
 ```
 </details>
 
-- Так же важное замечание. Если вы указали статичный ip, вам не нужен пункт 14. Вы и так знаете внутри сети podman'a его ip, т.е ```10.55.0.2```. В панели вы так же добавляете ```10.55.0.2``` а не ```10.89.1.11``` как показано в примере ниже.
+- Так же важное замечание. Если вы указали статичный ip, вам не нужен пункт 14. Вы и так знаете внутри сети podman'a его ip, т.е ```10.55.0.5```. В панели вы так же добавляете ```10.55.0.5``` а не ```10.89.1.11``` как показано в примере ниже.
 
 14. После этого мы узнаём ip этого контейнера для добавления его в наш прокси:
 ```
@@ -253,4 +253,30 @@ Strict mode, no HTTP connection allowed!
 ```
 В: Как сделать автоматический перезапуск контейнера при ошибке?
 О: Пропишите опцию --restart always при использовании run.
+```
+
+```
+В: Возникают ошибки связанные с /.well-known/caldav и похожими. Как это исправить?
+О: Прописать в advanced в nginx:
+location /.well-known/carddav {
+    return 301 $scheme://$host/remote.php/dav;
+}
+
+location /.well-known/caldav {
+    return 301 $scheme://$host/remote.php/dav;
+}
+```
+
+```
+В: Низкая скорость через обратный прокси, как исправить?
+О: Прописать в advanced в nginx:
+proxy_buffering off;
+client_body_buffer_size 1024k;
+http2_body_preread_size 512k;
+proxy_read_timeout 86400s;
+client_max_body_size 0;
+```
+```
+В: Не указан регион размещения этого сервера Nextcloud
+О: Прописать 'default_phone_region' => 'RU', в конфигурации сервера
 ```
